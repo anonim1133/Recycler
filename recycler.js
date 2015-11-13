@@ -5,7 +5,7 @@ var lwip = require('lwip');
 
 var db = require('./db');
 
-module.exports.download = function(file_url) {
+module.exports.download = function(file_url, ret) {
 	var options = {
 		host: url.parse(file_url).host,
 		port: 80,
@@ -20,8 +20,29 @@ module.exports.download = function(file_url) {
 				file.write(data);
 			}).on('end', function() {
 				file.end();
-				console.log(file_name + ' downloaded to ' + global.config.DOWNLOAD_DIR);
-				return(file_name);
+				ret(file_name);
 			});
     });
+    
 };
+
+module.exports.hashImage = function(file_name, ret){
+	lwip.open(global.config.DOWNLOAD_DIR + '/' + file_name, function(err, image){
+		image.resize(32, 32, function(err, image){
+			var hash = '';
+				for(var x = 0; x < 32; x++)
+					for(var y = 0; y < 32; y++){
+						var pixel = image.getPixel(y,x);
+						if((pixel.r + pixel.g + pixel.b) > 382)
+							hash += '1';
+						else
+							hash += '0';
+					}
+						
+			ret(hash);
+		});
+	});
+	fs.unlink(global.config.DOWNLOAD_DIR + '/' + file_name);
+};
+
+

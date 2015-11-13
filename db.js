@@ -25,13 +25,8 @@ module.exports.newPlayer = function(id, name){
 			return console.error('error fetching client from pool', err);
 		}
 		
-		client.query('INSERT INTO player values ($1, $2, 0)', [id, name], function(err, result) {	
+		client.query('INSERT INTO', [id, name], function(err, result) {	
 			done();
-			
-			if (err) {
-				if(err.code === '23505') console.log('User with that ID already exists')
-				else console.error('error running query', err);
-			}
 		});
 
 	});

@@ -21,10 +21,13 @@ app.post('/check/', function(req, res){
 	var name = req.body.url;
 	var url = req.body.url;
 	
-	recycler.download(url);
+	var file_name = recycler.download(url, function(file_name){
+		recycler.hashImage(file_name, function(hash){
+			res.send(hash);
+		});
+	});	
 	
 	
-	res.send(req.body.url);
 });
 
 //Handle 404
