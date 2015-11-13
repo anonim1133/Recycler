@@ -1,8 +1,9 @@
-var express = require('express');  
+var bodyParser = require('body-parser')
 var logger = require('express-logger');
+var express = require('express');  
 var util = require("util");
 
-var db = require("./recycler");
+var recycler = require("./recycler");
 
 global.config = require('./config');
 
@@ -10,9 +11,20 @@ var app = express();
 app.set('views', __dirname + '/views');
 app.use(logger({path: "logs/error.log"}));
 
+
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
+
 app.post('/check/', function(req, res){
-	//req.params.gid
-	res.send('POST');
+	var name = req.body.url;
+	var url = req.body.url;
+	
+	recycler.download(url);
+	
+	
+	res.send(req.body.url);
 });
 
 //Handle 404

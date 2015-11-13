@@ -4,8 +4,10 @@
   "description": "App to find duplicates",
   "main": "server.js",
   "dependencies": {
+    "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "express-logger": "^0.0.3",
+    "lwip": "0.0.8",
     "pg": "^4.4.3"
   },
   "devDependencies": {},
