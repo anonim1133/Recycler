@@ -26,7 +26,7 @@ module.exports.download = function(file_url, ret) {
     
 };
 
-module.exports.hashImage = function(file_name, ret){
+module.exports.hashImage = function(name, where, file_name, ret){
 	lwip.open(global.config.DOWNLOAD_DIR + '/' + file_name, function(err, image){
 		image.resize(32, 32, function(err, image){
 			var hash = '';
@@ -39,7 +39,10 @@ module.exports.hashImage = function(file_name, ret){
 							hash += '0';
 					}
 						
-			ret(hash);
+			db.check(name, where, hash, function(result){
+				ret(result);
+			});
+			
 		});
 	});
 	fs.unlink(global.config.DOWNLOAD_DIR + '/' + file_name);
