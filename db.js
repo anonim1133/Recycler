@@ -9,9 +9,16 @@ module.exports.check = function(name, where, hash, ret){
 		client.query('INSERT INTO image_duplicates("where", "original", "hash") VALUES ($1, $2, $3::bit(1024))', [where, name, hash], function(err) {
 			if(err != null){
 				console.log("DB Error: \n" + err);
-				if(err.code === '23505')
-					ret({status: "duplicate"})// Get that duplicate
-				else
+				if(err.code === '23505'){
+					client.query('SELECT original, "where" FROM image_duplicates WHERE hash = $1 LIMIT 1;', [hash], function(err, result) {
+					if(err != null){
+						console.log("DB Error: \n" + err);
+						ret({status: "error"});
+					}else{
+						ret({status: "duplicate", result: result.rows});
+					}
+				});
+				}else
 					ret({status: "error"});
 			}else{
 				//Returning an array of similar results
