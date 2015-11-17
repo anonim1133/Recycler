@@ -29,11 +29,11 @@ module.exports.check = function(name, where, hash, ret){
 			if(err != null){
 				console.log("DB Error: \n" + err);
 				if(err.code === '23505')
-					ret('duplicate')
+					ret({status: "duplicate"})
 				else
-					ret('error');
+					ret({status: "error"});
 			}else{
-				ret('new')
+				ret({status: "new"})
 			}
 			
 			done();
@@ -41,3 +41,14 @@ module.exports.check = function(name, where, hash, ret){
 		
 	});
 }
+
+
+/* PLSQL Similarity function
+ * 
+-- Function calculates similarity
+CREATE OR REPLACE FUNCTION similarity(a BIT, b BIT) RETURNS INT AS $$
+BEGIN
+	RETURN char_length(replace((a & b)::text, '0', '')) + char_length(replace((~a & ~b)::text, '0', '')) as similarity;
+END;
+$$ LANGUAGE plpgsql;
+*/
