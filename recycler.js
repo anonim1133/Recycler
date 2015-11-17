@@ -6,6 +6,7 @@ var lwip = require('lwip');
 var db = require('./db');
 
 module.exports.download = function(file_url, ret) {
+	console.log('[DEBUG] Downloading');
 	var options = {
 		host: url.parse(file_url).host,
 		port: 80,
@@ -27,6 +28,7 @@ module.exports.download = function(file_url, ret) {
 };
 
 module.exports.hashImage = function(name, where, file_name, ret){
+	console.log('[DEBUG] Hashing');
 	lwip.open(global.config.DOWNLOAD_DIR + '/' + file_name, function(err, image){
 		if(image !== null && image !== undefined)
 			image.resize(32, 32, function(err, image){
@@ -45,6 +47,8 @@ module.exports.hashImage = function(name, where, file_name, ret){
 				});
 				
 			});
+		else
+			ret({status: 'error'});
 	});
 	fs.unlink(global.config.DOWNLOAD_DIR + '/' + file_name);
 };
