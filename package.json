@@ -1,6 +1,6 @@
 {
   "name": "recycler",
-  "version": "0.0.1",
+  "version": "0.1",
   "description": "App to find duplicates",
   "main": "server.js",
   "dependencies": {
