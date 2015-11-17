@@ -22,6 +22,8 @@ app.post('/check/', function(req, res){
 	
 	recycler.download(url, function(file_name){
 		recycler.hashImage(name, url, file_name, function(hash){
+			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Access-Control-Allow-Origin', '*');
 			res.send(hash);
 		});
 	});	
