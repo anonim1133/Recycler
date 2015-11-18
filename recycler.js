@@ -62,7 +62,12 @@ module.exports.hashImage = function(name, where, original, file_name, ret){
 	}else{
 		console.log('[DEBUG] File seems to not be image');
 	}
-	fs.unlink(global.config.DOWNLOAD_DIR + '/' + file_name);
+	fs.stat(global.config.DOWNLOAD_DIR + '/' + file_name, function(err, stat) {
+		if(err == null) {
+			fs.unlink(global.config.DOWNLOAD_DIR + '/' + file_name);
+		}
+	});
+	
 };
 
 
