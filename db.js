@@ -24,7 +24,7 @@ module.exports.check = function(name, where, original, hash, ret){
 			}else{
 				//Returning an array of similar results
 				console.log('[DEBUG] Searching for similar images');
-				client.query('SELECT name, "where", similarity($1, hash) as similar FROM image_duplicates WHERE hash != $1 ORDER BY similarity($1, hash) DESC LIMIT 3;', [hash], function(err, result) {
+				client.query('SELECT name, "where", original, similarity($1, hash) as similar FROM image_duplicates WHERE hash != $1 ORDER BY similarity($1, hash) DESC LIMIT 3;', [hash], function(err, result) {
 					if(err != null){
 						console.log("DB Error: \n" + err);
 						ret({status: "error"});
