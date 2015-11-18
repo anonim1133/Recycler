@@ -27,37 +27,41 @@ module.exports.download = function(file_url, ret) {
     
 };
 
-module.exports.hashImage = function(name, where, file_name, ret){
+module.exports.hashImage = function(name, where, original, file_name, ret){
 	console.log('[DEBUG] Hashing');
-	lwip.open(global.config.DOWNLOAD_DIR + '/' + file_name, function(err, image){
-		if(image !== null && image !== undefined){
-			image.resize(32, 32, function(err, image){
-				var hash = '';
-				var avg = 0;
-					for(var x = 0; x < 32; x++)
-						for(var y = 0; y < 32; y++){
-							var pixel = image.getPixel(y,x);
-							avg += pixel.r + pixel.g + pixel.b;
-						}
-					
-					avg = avg/1000;
-					
-					for(var x = 0; x < 32; x++)
-						for(var y = 0; y < 32; y++){
-							var pixel = image.getPixel(y,x);
-							if((pixel.r + pixel.g + pixel.b) > avg)
-								hash += '1';
-							else
-								hash += '0';
-						}
+	if(file_name.match(/(\.jpg|\.jpeg|png)/i)){
+		lwip.open(global.config.DOWNLOAD_DIR + '/' + file_name, function(err, image){
+			if(image !== null && image !== undefined){
+				image.resize(32, 32, function(err, image){
+					var hash = '';
+					var avg = 0;
+						for(var x = 0; x < 32; x++)
+							for(var y = 0; y < 32; y++){
+								var pixel = image.getPixel(y,x);
+								avg += pixel.r + pixel.g + pixel.b;
+							}
 						
-				db.check(name, where, hash, function(result){
-					ret(result);
+						avg = avg/1024;
+						
+						for(var x = 0; x < 32; x++)
+							for(var y = 0; y < 32; y++){
+								var pixel = image.getPixel(y,x);
+								if((pixel.r + pixel.g + pixel.b) > avg)
+									hash += '1';
+								else
+									hash += '0';
+							}
+							
+					db.check(name, where, original, hash, function(result){
+						ret(result);
+					});
 				});
-			});
-		}else
-			ret({status: 'error', error: err});
-	});
+			}else
+				ret({status: 'error', error: err});
+		});
+	}else{
+		console.log('[DEBUG] File seems to not be image');
+	}
 	fs.unlink(global.config.DOWNLOAD_DIR + '/' + file_name);
 };
 

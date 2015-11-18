@@ -18,10 +18,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.post('/check/', function(req, res){
 	var name = req.body.name;
-	var url = req.body.url;
+	var original = req.body.original;
+	var where = req.body.where;
 	
-	recycler.download(url, function(file_name){
-		recycler.hashImage(name, url, file_name, function(hash){
+	recycler.download(original, function(file_name){
+		recycler.hashImage(name, where, original, file_name, function(hash){
 			res.setHeader('Content-Type', 'application/json');
 			res.setHeader('Access-Control-Allow-Origin', '*');
 			res.send(hash);
@@ -38,6 +39,7 @@ app.use(function(req, res, next) {
 
 //Handle 500
 app.use(function(err, req, res, next) {
+	console.log('[Debug] 500: ' + err);
 	res.status(500).send('Something broke!');
 });
 
